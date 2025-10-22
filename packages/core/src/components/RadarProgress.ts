@@ -1,0 +1,192 @@
+import { RadarProgressOptions } from '../types';
+import { ProgressBase } from '../base';
+import { createElement, canvasContextCache } from '../utils';
+
+/**
+ * RadarProgress - 雷达扫描进度条
+ */
+export class RadarProgress extends ProgressBase<RadarProgressOptions> {
+  private wrapper!: HTMLElement;
+  private canvas!: HTMLCanvasElement;
+  private ctx!: CanvasRenderingContext2D;
+  private animationId?: string;
+  private scanAngle: number = 0;
+  private textElement?: HTMLElement;
+
+  protected getDefaultOptions(): Partial<RadarProgressOptions> {
+    return {
+      ...super.getDefaultOptions(),
+      size: 200,
+      scanSpeed: 2,
+      radarColor: '#00ff00',
+      gridColor: 'rgba(0, 255, 0, 0.2)',
+      gridLines: 4,
+      showGrid: true,
+    };
+  }
+
+  protected render(): void {
+    this.container.innerHTML = '';
+
+    const size = this.config.get('size') ?? 200;
+
+    // 创建包装器
+    this.wrapper = createElement('div', 'ld-progress-radar', this.container);
+    this.wrapper.style.width = `${size}px`;
+    this.wrapper.style.height = `${size}px`;
+    this.wrapper.style.position = 'relative';
+    this.wrapper.style.backgroundColor = '#001a00';
+    this.wrapper.style.borderRadius = '50%';
+    this.wrapper.style.overflow = 'hidden';
+    this.wrapper.style.boxShadow = 'inset 0 0 20px rgba(0, 255, 0, 0.3)';
+
+    const className = this.config.get('className');
+    if (className) {
+      this.wrapper.classList.add(className);
+    }
+
+    // 创建 Canvas
+    this.canvas = createElement('canvas', 'ld-progress-radar__canvas', this.wrapper) as HTMLCanvasElement;
+    this.canvas.width = size;
+    this.canvas.height = size;
+
+    this.ctx = canvasContextCache.get(this.canvas);
+
+    // 创建文本
+    if (this.config.get('showText')) {
+      this.textElement = createElement('div', 'ld-progress-radar__text', this.wrapper);
+      this.textElement.style.position = 'absolute';
+      this.textElement.style.top = '50%';
+      this.textElement.style.left = '50%';
+      this.textElement.style.transform = 'translate(-50%, -50%)';
+      this.textElement.style.color = '#00ff00';
+      this.textElement.style.fontSize = '24px';
+      this.textElement.style.fontWeight = 'bold';
+      this.textElement.style.textShadow = '0 0 10px #00ff00';
+      this.textElement.style.zIndex = '10';
+    }
+
+    this.startAnimation();
+    this.updateProgress(this.currentValue);
+  }
+
+  /**
+   * 开始动画
+   */
+  private startAnimation(): void {
+    if (this.animationId) return;
+
+    const { rafController } = require('../utils/RAFController');
+    this.animationId = `radar-${this.id}`;
+
+    rafController.register(this.animationId, () => {
+      this.drawRadar();
+      const scanSpeed = this.config.get('scanSpeed') ?? 2;
+      this.scanAngle += scanSpeed;
+      if (this.scanAngle >= 360) {
+        this.scanAngle = 0;
+      }
+    }, 0);
+  }
+
+  /**
+   * 停止动画
+   */
+  private stopAnimation(): void {
+    if (this.animationId) {
+      const { rafController } = require('../utils/RAFController');
+      rafController.unregister(this.animationId);
+      this.animationId = undefined;
+    }
+  }
+
+  /**
+   * 绘制雷达
+   */
+  private drawRadar(): void {
+    if (!this.ctx) return;
+
+    const size = this.canvas.width;
+    const center = size / 2;
+    const percentage = this.config.getPercentage(this.currentValue);
+    const maxAngle = (360 * percentage) / 100;
+    const radarColor = this.config.get('radarColor') || '#00ff00';
+    const gridColor = this.config.get('gridColor') || 'rgba(0, 255, 0, 0.2)';
+
+    // 清除画布
+    this.ctx.clearRect(0, 0, size, size);
+
+    // 绘制网格
+    if (this.config.get('showGrid')) {
+      const gridLines = this.config.get('gridLines') ?? 4;
+      for (let i = 1; i <= gridLines; i++) {
+        const radius = (center * i) / gridLines;
+        this.ctx.beginPath();
+        this.ctx.arc(center, center, radius, 0, Math.PI * 2);
+        this.ctx.strokeStyle = gridColor;
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke();
+      }
+    }
+
+    // 绘制扫描扇形（仅在进度范围内）
+    if (this.scanAngle <= maxAngle) {
+      this.ctx.save();
+      this.ctx.translate(center, center);
+      this.ctx.rotate((this.scanAngle * Math.PI) / 180);
+
+      // 扫描线
+      const gradient = this.ctx.createLinearGradient(0, 0, center, 0);
+      gradient.addColorStop(0, 'transparent');
+      gradient.addColorStop(0.7, radarColor + '80');
+      gradient.addColorStop(1, radarColor);
+
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, 0);
+      this.ctx.lineTo(center, 0);
+      this.ctx.strokeStyle = radarColor;
+      this.ctx.lineWidth = 2;
+      this.ctx.stroke();
+
+      // 扇形扫描区域
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, 0);
+      this.ctx.arc(0, 0, center, 0, Math.PI / 6);
+      this.ctx.closePath();
+      this.ctx.fillStyle = gradient;
+      this.ctx.fill();
+
+      this.ctx.restore();
+    }
+
+    // 绘制进度弧线
+    this.ctx.beginPath();
+    this.ctx.arc(
+      center,
+      center,
+      center - 5,
+      -Math.PI / 2,
+      (-Math.PI / 2 + (maxAngle * Math.PI) / 180)
+    );
+    this.ctx.strokeStyle = radarColor;
+    this.ctx.lineWidth = 3;
+    this.ctx.stroke();
+  }
+
+  protected updateProgress(value: number): void {
+    if (this.textElement) {
+      this.textElement.textContent = this.formatText(value);
+    }
+  }
+
+  /**
+   * 销毁
+   */
+  destroy(): void {
+    this.stopAnimation();
+    super.destroy();
+  }
+}
+
+
+

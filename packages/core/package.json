@@ -1,11 +1,75 @@
 {
   "name": "@ldesign/progress-core",
-  "version": "1.1.0",
-  "description": "核心进度条库，框架无关，支持14种进度条类型",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "types": "dist/index.d.ts",
+  "version": "2.0.0",
+  "description": "核心进度条库，框架无关，支持31种进度条类型，内置插件系统和性能优化",
+  "keywords": [
+    "progress",
+    "progress-bar"
+  ],
+  "author": "ldesign",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./es/index.d.ts",
+      "import": "./es/index.js",
+      "require": "./lib/index.cjs"
+    },
+    "./base": {
+      "types": "./es/base/index.d.ts",
+      "import": "./es/base/index.js",
+      "require": "./lib/base/index.cjs"
+    },
+    "./base/*": {
+      "types": "./es/base/*.d.ts",
+      "import": "./es/base/*.js",
+      "require": "./lib/base/*.cjs"
+    },
+    "./components": {
+      "types": "./es/components/index.d.ts",
+      "import": "./es/components/index.js",
+      "require": "./lib/components/index.cjs"
+    },
+    "./components/*": {
+      "types": "./es/components/*.d.ts",
+      "import": "./es/components/*.js",
+      "require": "./lib/components/*.cjs"
+    },
+    "./types": {
+      "types": "./es/types/index.d.ts",
+      "import": "./es/types/index.js",
+      "require": "./lib/types/index.cjs"
+    },
+    "./types/*": {
+      "types": "./es/types/*.d.ts",
+      "import": "./es/types/*.js",
+      "require": "./lib/types/*.cjs"
+    },
+    "./utils": {
+      "types": "./es/utils/index.d.ts",
+      "import": "./es/utils/index.js",
+      "require": "./lib/utils/index.cjs"
+    },
+    "./utils/*": {
+      "types": "./es/utils/*.d.ts",
+      "import": "./es/utils/*.js",
+      "require": "./lib/utils/*.cjs"
+    },
+    "./es/index.css": "./es/index.css",
+    "./lib/index.css": "./lib/index.css",
+    "./dist/index.umd.css": "./dist/index.umd.css",
+    "./dist/index.umd.min.css": "./dist/index.umd.min.css"
+  },
+  "main": "./lib/index.cjs",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "unpkg": "./dist/index.min.js",
+  "jsdelivr": "./dist/index.min.js",
   "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "es",
+    "lib",
     "dist"
   ],
   "scripts": {
@@ -13,14 +77,6 @@
     "dev": "rollup -c -w",
     "clean": "rimraf dist"
   },
-  "keywords": [
-    "progress",
-    "progress-bar"
-  ],
-  "author": "ldesign",
-  "license": "MIT",
-  "peerDependencies": {},
-  "dependencies": {}
+  "dependencies": {},
+  "peerDependencies": {}
 }
-
-

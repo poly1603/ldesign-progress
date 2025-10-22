@@ -600,3 +600,370 @@
   pointer-events: none;
 }
 
+/* 时间轴进度条样式 */
+.ld-progress-timeline {
+  position: relative;
+}
+
+.ld-progress-timeline__container {
+  position: relative;
+}
+
+.ld-progress-timeline--vertical .ld-progress-timeline__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.ld-progress-timeline--horizontal .ld-progress-timeline__container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.ld-progress-timeline__line {
+  position: absolute;
+  background-color: transparent;
+  transition: var(--progress-transition);
+}
+
+.ld-progress-timeline--vertical .ld-progress-timeline__line {
+  left: 6px;
+  top: 0;
+  width: 0;
+  border-left: 2px solid var(--progress-color-primary);
+  height: 0;
+}
+
+.ld-progress-timeline--horizontal .ld-progress-timeline__line {
+  top: 6px;
+  left: 0;
+  height: 0;
+  border-top: 2px solid var(--progress-color-primary);
+  width: 0;
+}
+
+.ld-progress-timeline__event {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  z-index: 1;
+}
+
+.ld-progress-timeline--vertical .ld-progress-timeline__event {
+  flex-direction: row;
+}
+
+.ld-progress-timeline--horizontal .ld-progress-timeline__event {
+  flex-direction: column;
+  align-items: center;
+}
+
+.ld-progress-timeline__marker {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--progress-color-track);
+  border: 2px solid var(--progress-color-track);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--progress-transition);
+  font-size: 8px;
+}
+
+.ld-progress-timeline__marker--completed {
+  background-color: var(--progress-color-success);
+  border-color: var(--progress-color-success);
+}
+
+.ld-progress-timeline__marker--active {
+  background-color: var(--progress-color-primary);
+  border-color: var(--progress-color-primary);
+  box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.2);
+  animation: timeline-pulse 2s infinite;
+}
+
+.ld-progress-timeline__marker--pending {
+  background-color: white;
+  border-color: var(--progress-color-track);
+}
+
+@keyframes timeline-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(64, 158, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(64, 158, 255, 0.1);
+  }
+}
+
+.ld-progress-timeline__content {
+  flex: 1;
+  padding-left: 16px;
+}
+
+.ld-progress-timeline--horizontal .ld-progress-timeline__content {
+  padding-left: 0;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.ld-progress-timeline__date {
+  font-size: 12px;
+  color: #909399;
+  margin-bottom: 4px;
+}
+
+.ld-progress-timeline__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--progress-color-text);
+  margin-bottom: 4px;
+}
+
+.ld-progress-timeline__description {
+  font-size: 13px;
+  color: #606266;
+  line-height: 1.5;
+}
+
+.ld-progress-timeline__custom {
+  margin-top: 8px;
+}
+
+/* PathProgress 样式 */
+.ld-progress-path {
+  display: block;
+}
+
+.ld-progress-path__bg {
+  opacity: 0.3;
+}
+
+.ld-progress-path__line {
+  transition: stroke-dashoffset var(--progress-transition);
+}
+
+.ld-progress-path__indicator {
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.ld-progress-path__text {
+  color: var(--progress-color-text);
+  font-size: 14px;
+  font-weight: bold;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* SparklineProgress 样式 */
+.ld-progress-sparkline {
+  display: block;
+}
+
+.ld-progress-sparkline__fill {
+  opacity: 0.3;
+}
+
+.ld-progress-sparkline__line {
+  filter: drop-shadow(0 2px 4px rgba(64, 158, 255, 0.3));
+}
+
+.ld-progress-sparkline__dot {
+  opacity: 0.8;
+  transition: r 0.2s ease;
+}
+
+.ld-progress-sparkline__dot:hover {
+  r: 6;
+  opacity: 1;
+}
+
+.ld-progress-sparkline__progress-line {
+  opacity: 0.8;
+}
+
+/* GradientRingProgress 样式 */
+.ld-progress-gradient-ring {
+  display: block;
+}
+
+.ld-progress-gradient-ring__track {
+  opacity: 0.3;
+}
+
+.ld-progress-gradient-ring__progress {
+  transition: stroke-dashoffset var(--progress-transition);
+  filter: drop-shadow(0 0 8px rgba(255, 0, 128, 0.5));
+}
+
+.ld-progress-gradient-ring__text {
+  color: var(--progress-color-text);
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* LiquidProgress 样式 */
+.ld-progress-liquid {
+  box-shadow: var(--progress-shadow);
+}
+
+.ld-progress-liquid__canvas {
+  mix-blend-mode: multiply;
+}
+
+.ld-progress-liquid__text {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ParticleProgress 样式 */
+.ld-progress-particle {
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.ld-progress-particle__text {
+  color: var(--progress-color-text);
+  user-select: none;
+}
+
+/* NeonProgress 样式 */
+.ld-progress-neon__bar--flicker {
+  animation: neon-flicker 0.1s infinite alternate;
+}
+
+@keyframes neon-flicker {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.95; }
+}
+
+.ld-progress-neon__text {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 2px;
+}
+
+/* RippleProgress 样式 */
+.ld-progress-ripple {
+  display: inline-block;
+}
+
+.ld-progress-ripple__text {
+  color: var(--progress-color-primary);
+}
+
+/* SkeletonProgress 样式 */
+@keyframes skeleton-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.ld-progress-skeleton {
+  transition: opacity 0.3s ease;
+}
+
+/* CountdownProgress 样式 */
+.ld-progress-countdown {
+  display: block;
+}
+
+.ld-progress-countdown__track {
+  opacity: 0.3;
+}
+
+.ld-progress-countdown__progress {
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+.ld-progress-countdown__time {
+  color: var(--progress-color-primary);
+  user-select: none;
+}
+
+.ld-progress-countdown__label {
+  user-select: none;
+}
+
+/* GlassProgress 样式 */
+.ld-progress-glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.ld-progress-glass__bar {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* GradientFlowProgress 样式 */
+.ld-progress-gradient-flow__bar {
+  animation: gradient-flow-animation 3s linear infinite;
+}
+
+@keyframes gradient-flow-animation {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* StackedProgress 样式 */
+.ld-progress-stacked {
+  transform-style: preserve-3d;
+}
+
+.ld-progress-stacked__layer {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ld-progress-stacked__bar {
+  will-change: width;
+}
+
+/* RadarProgress 样式 */
+.ld-progress-radar {
+  box-shadow: 
+    0 0 20px rgba(0, 255, 0, 0.3),
+    inset 0 0 20px rgba(0, 255, 0, 0.2);
+}
+
+/* BubbleProgress 样式 */
+.ld-progress-bubble {
+  box-shadow: var(--progress-shadow);
+}
+
+/* SpiralProgress 样式 */
+.ld-progress-spiral {
+  display: block;
+}
+
+.ld-progress-spiral__progress {
+  transition: stroke-dashoffset var(--progress-transition);
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.ld-progress-spiral__text {
+  color: var(--progress-color-text);
+  user-select: none;
+}
+
+/* MetroProgress 样式 */
+.ld-progress-metro__station {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.ld-progress-metro__station:hover {
+  r: 10;
+}
+
+.ld-progress-metro__label {
+  font-weight: 500;
+  user-select: none;
+}
+
+.ld-progress-metro__progress-line {
+  transition: all 0.3s ease;
+}
+

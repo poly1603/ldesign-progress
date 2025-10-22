@@ -288,3 +288,252 @@ export type EventType = 'change' | 'complete' | 'start' | 'update' | 'destroy';
  */
 export type EventHandler = (...args: any[]) => void;
 
+/**
+ * 时间轴进度条配置
+ */
+export interface TimelineProgressOptions extends BaseProgressOptions {
+  layout?: 'vertical' | 'horizontal';
+  events?: TimelineEvent[];
+  showDates?: boolean;
+  showConnector?: boolean;
+  connectorStyle?: 'solid' | 'dashed' | 'dotted';
+  eventSize?: number;
+  spacing?: number;
+}
+
+/**
+ * 时间轴事件
+ */
+export interface TimelineEvent {
+  title?: string;
+  description?: string;
+  date?: string;
+  icon?: string;
+  color?: string;
+  status?: 'completed' | 'active' | 'pending';
+  customContent?: string | HTMLElement;
+}
+
+/**
+ * PathProgress 配置
+ */
+export interface PathProgressOptions extends BaseProgressOptions {
+  pathData: string;
+  indicatorType?: 'circle' | 'arrow' | 'square' | 'none';
+  indicatorSize?: number;
+  showPath?: boolean;
+  pathColor?: string;
+}
+
+/**
+ * SparklineProgress 配置
+ */
+export interface SparklineProgressOptions extends BaseProgressOptions {
+  data?: number[];
+  lineColor?: string;
+  fillColor?: string;
+  smooth?: boolean;
+  showDots?: boolean;
+  dotSize?: number;
+}
+
+/**
+ * GradientRingProgress 配置
+ */
+export interface GradientRingProgressOptions extends BaseProgressOptions {
+  radius?: number;
+  gradientColors?: string[];
+  lineCap?: 'round' | 'square' | 'butt';
+  rotate?: number;
+}
+
+/**
+ * LiquidProgress 配置
+ */
+export interface LiquidProgressOptions extends BaseProgressOptions {
+  shape?: 'circle' | 'square' | 'rounded';
+  waveHeight?: number;
+  waveSpeed?: number;
+  liquidColor?: string;
+  backgroundColor?: string;
+}
+
+/**
+ * ParticleProgress 配置
+ */
+export interface ParticleProgressOptions extends BaseProgressOptions {
+  particleCount?: number;
+  particleSize?: number;
+  particleSpeed?: number;
+  particleColor?: string;
+  trailLength?: number;
+}
+
+/**
+ * 粒子
+ */
+export interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  trail?: Array<{ x: number; y: number }>;
+}
+
+/**
+ * NeonProgress 配置
+ */
+export interface NeonProgressOptions extends BaseProgressOptions {
+  neonColor?: string;
+  glowIntensity?: number;
+  flickerEffect?: boolean;
+  tubeStyle?: boolean;
+}
+
+/**
+ * RippleProgress 配置
+ */
+export interface RippleProgressOptions extends BaseProgressOptions {
+  size?: number;
+  rippleCount?: number;
+  rippleSpeed?: number;
+  rippleColor?: string;
+  maxRadius?: number;
+}
+
+/**
+ * 涟漪圆
+ */
+export interface RippleCircle {
+  radius: number;
+  alpha: number;
+  maxRadius: number;
+}
+
+/**
+ * SkeletonProgress 配置
+ */
+export interface SkeletonProgressOptions extends BaseProgressOptions {
+  shimmerSpeed?: number;
+  baseColor?: string;
+  shimmerColor?: string;
+  showShimmer?: boolean;
+}
+
+/**
+ * CountdownProgress 配置
+ */
+export interface CountdownProgressOptions extends BaseProgressOptions {
+  radius?: number;
+  countdownDuration?: number;
+  showTime?: boolean;
+  timeFormat?: 'mm:ss' | 'ss' | 'mm';
+  autoStart?: boolean;
+}
+
+/**
+ * GlassProgress 配置
+ */
+export interface GlassProgressOptions extends BaseProgressOptions {
+  blurAmount?: number;
+  opacity?: number;
+  glassColor?: string;
+  borderColor?: string;
+}
+
+/**
+ * GradientFlowProgress 配置
+ */
+export interface GradientFlowProgressOptions extends BaseProgressOptions {
+  flowSpeed?: number;
+  gradientColors?: string[];
+}
+
+/**
+ * StackedProgress 配置
+ */
+export interface StackedProgressOptions extends BaseProgressOptions {
+  layerCount?: number;
+  layerOffset?: number;
+  depth?: number;
+  colors?: string[];
+}
+
+/**
+ * 堆叠层
+ */
+export interface StackLayer {
+  element: HTMLElement;
+  offset: number;
+  color: string;
+}
+
+/**
+ * RadarProgress 配置
+ */
+export interface RadarProgressOptions extends BaseProgressOptions {
+  size?: number;
+  scanSpeed?: number;
+  radarColor?: string;
+  gridColor?: string;
+  gridLines?: number;
+  showGrid?: boolean;
+}
+
+/**
+ * BubbleProgress 配置
+ */
+export interface BubbleProgressOptions extends BaseProgressOptions {
+  bubbleColor?: string;
+  bubbleCount?: number;
+  bubbleSpeed?: number;
+  backgroundColor?: string;
+}
+
+/**
+ * 气泡
+ */
+export interface Bubble {
+  x: number;
+  y: number;
+  radius: number;
+  speed: number;
+  wobble: number;
+  wobbleSpeed: number;
+  alpha: number;
+}
+
+/**
+ * SpiralProgress 配置
+ */
+export interface SpiralProgressOptions extends BaseProgressOptions {
+  size?: number;
+  turns?: number;
+  innerRadius?: number;
+  clockwise?: boolean;
+}
+
+/**
+ * MetroProgress 配置
+ */
+export interface MetroProgressOptions extends BaseProgressOptions {
+  layout?: 'horizontal' | 'vertical';
+  stations?: MetroStation[];
+  stationSize?: number;
+  lineColor?: string;
+  spacing?: number;
+  showStationNames?: boolean;
+}
+
+/**
+ * 地铁站点
+ */
+export interface MetroStation {
+  name: string;
+  status?: 'completed' | 'active' | 'pending';
+  icon?: string;
+  color?: string;
+}
+

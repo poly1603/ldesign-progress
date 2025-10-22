@@ -1,0 +1,156 @@
+/*!
+ * ***********************************
+ * @ldesign/progress-core v2.0.0   *
+ * Built with rollup               *
+ * Build time: 2024-10-22 17:55:32 *
+ * Build mode: production          *
+ * Minified: No                    *
+ * ***********************************
+ */
+'use strict';
+
+var index = require('./types/index.cjs');
+var EventEmitter = require('./utils/EventEmitter.cjs');
+var ConfigManager = require('./utils/ConfigManager.cjs');
+var AnimationController = require('./utils/AnimationController.cjs');
+var ThemeManager = require('./utils/ThemeManager.cjs');
+var helpers = require('./utils/helpers.cjs');
+var MemoryManager = require('./utils/MemoryManager.cjs');
+var RAFController = require('./utils/RAFController.cjs');
+var PluginSystem = require('./utils/PluginSystem.cjs');
+var ProgressPredictor = require('./utils/ProgressPredictor.cjs');
+var ProgressSnapshot = require('./utils/ProgressSnapshot.cjs');
+var ProgressSynchronizer = require('./utils/ProgressSynchronizer.cjs');
+var ProgressBase = require('./base/ProgressBase.cjs');
+var LinearProgress = require('./components/LinearProgress.cjs');
+var CircleProgress = require('./components/CircleProgress.cjs');
+var SemiCircleProgress = require('./components/SemiCircleProgress.cjs');
+var DashboardProgress = require('./components/DashboardProgress.cjs');
+var StepProgress = require('./components/StepProgress.cjs');
+var SegmentProgress = require('./components/SegmentProgress.cjs');
+var WaveProgress = require('./components/WaveProgress.cjs');
+var ImageProgress = require('./components/ImageProgress.cjs');
+var CustomShapeProgress = require('./components/CustomShapeProgress.cjs');
+var GaugeProgress = require('./components/GaugeProgress.cjs');
+var RingProgress = require('./components/RingProgress.cjs');
+var PolygonProgress = require('./components/PolygonProgress.cjs');
+var BatteryProgress = require('./components/BatteryProgress.cjs');
+var HeartProgress = require('./components/HeartProgress.cjs');
+var TimelineProgress = require('./components/TimelineProgress.cjs');
+var PathProgress = require('./components/PathProgress.cjs');
+var SparklineProgress = require('./components/SparklineProgress.cjs');
+var GradientRingProgress = require('./components/GradientRingProgress.cjs');
+var LiquidProgress = require('./components/LiquidProgress.cjs');
+var ParticleProgress = require('./components/ParticleProgress.cjs');
+var NeonProgress = require('./components/NeonProgress.cjs');
+var RippleProgress = require('./components/RippleProgress.cjs');
+var SkeletonProgress = require('./components/SkeletonProgress.cjs');
+var CountdownProgress = require('./components/CountdownProgress.cjs');
+var GlassProgress = require('./components/GlassProgress.cjs');
+var GradientFlowProgress = require('./components/GradientFlowProgress.cjs');
+var StackedProgress = require('./components/StackedProgress.cjs');
+var RadarProgress = require('./components/RadarProgress.cjs');
+var BubbleProgress = require('./components/BubbleProgress.cjs');
+var SpiralProgress = require('./components/SpiralProgress.cjs');
+var MetroProgress = require('./components/MetroProgress.cjs');
+
+
+
+exports.EasingFunctions = index.EasingFunctions;
+exports.EventEmitter = EventEmitter.EventEmitter;
+exports.ConfigManager = ConfigManager.ConfigManager;
+exports.AnimationController = AnimationController.AnimationController;
+exports.ThemeManager = ThemeManager.ThemeManager;
+exports.themeManager = ThemeManager.themeManager;
+exports.blendColors = helpers.blendColors;
+exports.clamp = helpers.clamp;
+exports.createBezierPath = helpers.createBezierPath;
+exports.createElement = helpers.createElement;
+exports.createFragment = helpers.createFragment;
+exports.createSVGElement = helpers.createSVGElement;
+exports.debounce = helpers.debounce;
+exports.debounceEnhanced = helpers.debounceEnhanced;
+exports.deepMerge = helpers.deepMerge;
+exports.degToRad = helpers.degToRad;
+exports.distance = helpers.distance;
+exports.formatPercentage = helpers.formatPercentage;
+exports.generateId = helpers.generateId;
+exports.getComputedStyleValue = helpers.getComputedStyleValue;
+exports.getContrastColor = helpers.getContrastColor;
+exports.hexToRgb = helpers.hexToRgb;
+exports.isMobile = helpers.isMobile;
+exports.isValidColor = helpers.isValidColor;
+exports.lerp = helpers.lerp;
+exports.normalizeAngle = helpers.normalizeAngle;
+exports.parseGradient = helpers.parseGradient;
+exports.radToDeg = helpers.radToDeg;
+exports.rgbToHex = helpers.rgbToHex;
+exports.safeExecute = helpers.safeExecute;
+exports.setAttributes = helpers.setAttributes;
+exports.setStyles = helpers.setStyles;
+exports.supportsOffscreenCanvas = helpers.supportsOffscreenCanvas;
+exports.supportsTouch = helpers.supportsTouch;
+exports.throttle = helpers.throttle;
+exports.throttleEnhanced = helpers.throttleEnhanced;
+exports.toPx = helpers.toPx;
+exports.CanvasContextCache = MemoryManager.CanvasContextCache;
+exports.ComputationCache = MemoryManager.ComputationCache;
+exports.DOMElementPool = MemoryManager.DOMElementPool;
+exports.GradientCache = MemoryManager.GradientCache;
+exports.MemoryMonitor = MemoryManager.MemoryMonitor;
+exports.ObjectPool = MemoryManager.ObjectPool;
+exports.SVGElementPool = MemoryManager.SVGElementPool;
+exports.canvasContextCache = MemoryManager.canvasContextCache;
+exports.domElementPool = MemoryManager.domElementPool;
+exports.gradientCache = MemoryManager.gradientCache;
+exports.memoryMonitor = MemoryManager.memoryMonitor;
+exports.svgElementPool = MemoryManager.svgElementPool;
+exports.AnimationWrapper = RAFController.AnimationWrapper;
+exports.DOMBatcher = RAFController.DOMBatcher;
+exports.domBatcher = RAFController.domBatcher;
+exports.rafController = RAFController.rafController;
+exports.AutoSavePlugin = PluginSystem.AutoSavePlugin;
+exports.LoggerPlugin = PluginSystem.LoggerPlugin;
+exports.MiddlewareManager = PluginSystem.MiddlewareManager;
+exports.PerformancePlugin = PluginSystem.PerformancePlugin;
+exports.PluginManager = PluginSystem.PluginManager;
+exports.pluginManager = PluginSystem.pluginManager;
+exports.ProgressPredictor = ProgressPredictor.ProgressPredictor;
+exports.ProgressComparator = ProgressSnapshot.ProgressComparator;
+exports.ProgressSnapshotManager = ProgressSnapshot.ProgressSnapshotManager;
+exports.ProgressChain = ProgressSynchronizer.ProgressChain;
+exports.ProgressGroup = ProgressSynchronizer.ProgressGroup;
+exports.ProgressSynchronizer = ProgressSynchronizer.ProgressSynchronizer;
+exports.ProgressBase = ProgressBase.ProgressBase;
+exports.LinearProgress = LinearProgress.LinearProgress;
+exports.CircleProgress = CircleProgress.CircleProgress;
+exports.SemiCircleProgress = SemiCircleProgress.SemiCircleProgress;
+exports.DashboardProgress = DashboardProgress.DashboardProgress;
+exports.StepProgress = StepProgress.StepProgress;
+exports.SegmentProgress = SegmentProgress.SegmentProgress;
+exports.WaveProgress = WaveProgress.WaveProgress;
+exports.ImageProgress = ImageProgress.ImageProgress;
+exports.CustomShapeProgress = CustomShapeProgress.CustomShapeProgress;
+exports.GaugeProgress = GaugeProgress.GaugeProgress;
+exports.RingProgress = RingProgress.RingProgress;
+exports.PolygonProgress = PolygonProgress.PolygonProgress;
+exports.BatteryProgress = BatteryProgress.BatteryProgress;
+exports.HeartProgress = HeartProgress.HeartProgress;
+exports.TimelineProgress = TimelineProgress.TimelineProgress;
+exports.PathProgress = PathProgress.PathProgress;
+exports.SparklineProgress = SparklineProgress.SparklineProgress;
+exports.GradientRingProgress = GradientRingProgress.GradientRingProgress;
+exports.LiquidProgress = LiquidProgress.LiquidProgress;
+exports.ParticleProgress = ParticleProgress.ParticleProgress;
+exports.NeonProgress = NeonProgress.NeonProgress;
+exports.RippleProgress = RippleProgress.RippleProgress;
+exports.SkeletonProgress = SkeletonProgress.SkeletonProgress;
+exports.CountdownProgress = CountdownProgress.CountdownProgress;
+exports.GlassProgress = GlassProgress.GlassProgress;
+exports.GradientFlowProgress = GradientFlowProgress.GradientFlowProgress;
+exports.StackedProgress = StackedProgress.StackedProgress;
+exports.RadarProgress = RadarProgress.RadarProgress;
+exports.BubbleProgress = BubbleProgress.BubbleProgress;
+exports.SpiralProgress = SpiralProgress.SpiralProgress;
+exports.MetroProgress = MetroProgress.MetroProgress;
+//# sourceMappingURL=index.cjs.map

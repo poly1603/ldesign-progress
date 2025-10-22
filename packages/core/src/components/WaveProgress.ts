@@ -1,6 +1,12 @@
 import { WaveProgressOptions } from '../types';
 import { ProgressBase } from '../base';
-import { createElement, createSVGElement, toPx } from '../utils';
+import {
+  createElement,
+  createSVGElement,
+  toPx,
+  supportsOffscreenCanvas,
+  canvasContextCache,
+} from '../utils';
 
 /**
  * 水波纹进度条
@@ -8,11 +14,13 @@ import { createElement, createSVGElement, toPx } from '../utils';
 export class WaveProgress extends ProgressBase<WaveProgressOptions> {
   private wrapper!: HTMLElement;
   private canvas?: HTMLCanvasElement;
+  private offscreenCanvas?: OffscreenCanvas;
   private svg?: SVGSVGElement;
-  private ctx?: CanvasRenderingContext2D;
+  private ctx?: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
   private textElement?: HTMLElement;
-  private animationId?: number;
+  private animationId?: string;
   private waveOffset: number = 0;
+  private useOffscreen: boolean = false;
 
   protected getDefaultOptions(): Partial<WaveProgressOptions> {
     return {
@@ -81,15 +89,25 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
   protected renderCanvas(): void {
     const width = this.config.get('width') ?? 200;
     const height = this.config.get('height') ?? 200;
+    const widthNum = typeof width === 'number' ? width : parseInt(width);
+    const heightNum = typeof height === 'number' ? height : parseInt(height);
 
     this.canvas = createElement('canvas', 'ld-progress-wave__canvas', this.wrapper) as HTMLCanvasElement;
-    this.canvas.width = typeof width === 'number' ? width : parseInt(width);
-    this.canvas.height = typeof height === 'number' ? height : parseInt(height);
+    this.canvas.width = widthNum;
+    this.canvas.height = heightNum;
     this.canvas.style.position = 'absolute';
     this.canvas.style.top = '0';
     this.canvas.style.left = '0';
 
-    this.ctx = this.canvas.getContext('2d')!;
+    // 尝试使用 OffscreenCanvas 提升性能
+    this.useOffscreen = supportsOffscreenCanvas();
+    if (this.useOffscreen) {
+      this.offscreenCanvas = new OffscreenCanvas(widthNum, heightNum);
+      this.ctx = this.offscreenCanvas.getContext('2d')!;
+    } else {
+      // 使用缓存的上下文
+      this.ctx = canvasContextCache.get(this.canvas, { alpha: true });
+    }
   }
 
   protected renderSVG(): void {
@@ -124,23 +142,27 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
   }
 
   /**
-   * 开始波浪动画
+   * 开始波浪动画 - 使用 RAF 池化系统
    */
   private startWaveAnimation(): void {
     this.stopWaveAnimation();
 
-    const animate = () => {
-      const percentage = this.config.getPercentage(this.currentValue);
-      this.drawWave(percentage);
-      
-      // 更新偏移量
-      const waveSpeed = this.config.get('waveSpeed') ?? 0.05;
-      this.waveOffset += waveSpeed;
-      
-      this.animationId = requestAnimationFrame(animate);
-    };
+    // 使用 RAF 控制器注册动画
+    const { rafController } = require('../utils/RAFController');
+    this.animationId = `wave-${this.id}`;
 
-    animate();
+    rafController.register(
+      this.animationId,
+      () => {
+        const percentage = this.config.getPercentage(this.currentValue);
+        this.drawWave(percentage);
+
+        // 更新偏移量
+        const waveSpeed = this.config.get('waveSpeed') ?? 0.05;
+        this.waveOffset += waveSpeed;
+      },
+      0 // 默认优先级
+    );
   }
 
   /**
@@ -148,7 +170,8 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
    */
   private stopWaveAnimation(): void {
     if (this.animationId) {
-      cancelAnimationFrame(this.animationId);
+      const { rafController } = require('../utils/RAFController');
+      rafController.unregister(this.animationId);
       this.animationId = undefined;
     }
   }
@@ -158,7 +181,7 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
    */
   private drawWave(percentage: number): void {
     const renderMode = this.config.get('renderMode') ?? 'canvas';
-    
+
     if (renderMode === 'canvas' && this.ctx && this.canvas) {
       this.drawCanvasWave(percentage);
     } else if (renderMode === 'svg' && this.svg) {
@@ -167,13 +190,13 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
   }
 
   /**
-   * Canvas 绘制波浪
+   * Canvas 绘制波浪（优化版，支持 OffscreenCanvas）
    */
   private drawCanvasWave(percentage: number): void {
-    if (!this.ctx || !this.canvas) return;
+    if (!this.ctx) return;
 
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+    const width = this.canvas?.width ?? (this.offscreenCanvas?.width ?? 200);
+    const height = this.canvas?.height ?? (this.offscreenCanvas?.height ?? 200);
     const waveHeight = this.config.get('waveHeight') ?? 10;
     const waveCount = this.config.get('waveCount') ?? 2;
 
@@ -203,6 +226,15 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
     const fillColor = Array.isArray(color) ? color[0] : color || '#409eff';
     this.ctx.fillStyle = fillColor;
     this.ctx.fill();
+
+    // 如果使用 OffscreenCanvas，需要传输到主 Canvas
+    if (this.useOffscreen && this.canvas && this.offscreenCanvas) {
+      const ctx2d = this.canvas.getContext('2d');
+      if (ctx2d) {
+        ctx2d.clearRect(0, 0, width, height);
+        ctx2d.drawImage(this.offscreenCanvas as any, 0, 0);
+      }
+    }
   }
 
   /**
@@ -211,11 +243,11 @@ export class WaveProgress extends ProgressBase<WaveProgressOptions> {
   private drawSVGWave(percentage: number): void {
     if (!this.svg) return;
 
-    const width = typeof this.config.get('width') === 'number' 
-      ? this.config.get('width') as number 
+    const width = typeof this.config.get('width') === 'number'
+      ? this.config.get('width') as number
       : parseInt(this.config.get('width') as string);
-    const height = typeof this.config.get('height') === 'number' 
-      ? this.config.get('height') as number 
+    const height = typeof this.config.get('height') === 'number'
+      ? this.config.get('height') as number
       : parseInt(this.config.get('height') as string);
     const waveHeight = this.config.get('waveHeight') ?? 10;
     const waveCount = this.config.get('waveCount') ?? 2;

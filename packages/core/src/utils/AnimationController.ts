@@ -1,20 +1,28 @@
 import { EasingFunction, EasingFunctions } from '../types';
+import { rafController, AnimationWrapper } from './RAFController';
+import { generateId } from './helpers';
 
 /**
- * 动画控制器
+ * 动画控制器 - 使用 RAF 池化系统
  */
 export class AnimationController {
+  private id: string;
   private startTime: number = 0;
   private startValue: number = 0;
   private endValue: number = 0;
   private duration: number = 0;
   private easing: EasingFunction = EasingFunctions.easeOutQuad;
-  private animationFrameId: number | null = null;
+  private animation: AnimationWrapper | null = null;
   private isRunning: boolean = false;
   private isPaused: boolean = false;
   private pausedTime: number = 0;
+  private pausedDuration: number = 0;
   private onUpdate?: (value: number) => void;
   private onComplete?: () => void;
+
+  constructor() {
+    this.id = generateId('animation');
+  }
 
   /**
    * 启动动画
@@ -44,17 +52,23 @@ export class AnimationController {
     this.startTime = performance.now();
     this.isRunning = true;
     this.isPaused = false;
-    this.animate();
+    this.pausedDuration = 0;
+
+    // 使用 RAF 池化系统
+    this.animation = new AnimationWrapper(
+      this.id,
+      (timestamp) => this.animate(timestamp),
+      0 // 默认优先级
+    );
   }
 
   /**
    * 动画循环
    */
-  private animate = (): void => {
+  private animate = (timestamp: number): void => {
     if (!this.isRunning || this.isPaused) return;
 
-    const currentTime = performance.now();
-    const elapsed = currentTime - this.startTime;
+    const elapsed = timestamp - this.startTime - this.pausedDuration;
     const progress = Math.min(elapsed / this.duration, 1);
 
     const easedProgress = this.easing(progress);
@@ -65,10 +79,12 @@ export class AnimationController {
       this.onUpdate(currentValue);
     }
 
-    if (progress < 1) {
-      this.animationFrameId = requestAnimationFrame(this.animate);
-    } else {
+    if (progress >= 1) {
       this.isRunning = false;
+      if (this.animation) {
+        this.animation.destroy();
+        this.animation = null;
+      }
       if (this.onComplete) {
         this.onComplete();
       }
@@ -82,9 +98,8 @@ export class AnimationController {
     if (this.isRunning && !this.isPaused) {
       this.isPaused = true;
       this.pausedTime = performance.now();
-      if (this.animationFrameId !== null) {
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
+      if (this.animation) {
+        this.animation.pause();
       }
     }
   }
@@ -94,10 +109,12 @@ export class AnimationController {
    */
   resume(): void {
     if (this.isRunning && this.isPaused) {
-      this.isPaused = false;
       const pauseDuration = performance.now() - this.pausedTime;
-      this.startTime += pauseDuration;
-      this.animate();
+      this.pausedDuration += pauseDuration;
+      this.isPaused = false;
+      if (this.animation) {
+        this.animation.resume();
+      }
     }
   }
 
@@ -107,9 +124,9 @@ export class AnimationController {
   stop(): void {
     this.isRunning = false;
     this.isPaused = false;
-    if (this.animationFrameId !== null) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
+    if (this.animation) {
+      this.animation.destroy();
+      this.animation = null;
     }
   }
 
@@ -120,6 +137,7 @@ export class AnimationController {
     this.stop();
     this.startTime = 0;
     this.pausedTime = 0;
+    this.pausedDuration = 0;
   }
 
   /**
@@ -127,6 +145,13 @@ export class AnimationController {
    */
   isAnimating(): boolean {
     return this.isRunning && !this.isPaused;
+  }
+
+  /**
+   * 获取动画 ID
+   */
+  getId(): string {
+    return this.id;
   }
 }
 

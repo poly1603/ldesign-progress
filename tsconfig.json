@@ -9,11 +9,25 @@
     "outDir": "./dist",
     "rootDir": "./packages",
     "removeComments": true,
+    
+    /* 严格类型检查选项 */
     "strict": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    
+    /* 额外检查 */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    
     "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
